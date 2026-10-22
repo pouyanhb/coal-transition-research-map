@@ -46,11 +46,14 @@ function render(){
  pointLayer.clearLayers();for(const p of matching){const m=markers.get(p.id);if(m)pointLayer.addLayer(m);}
  const bounds=map.getBounds();
  const visible=matching.filter(p=>{const m=markers.get(p.id);return m&&bounds.contains(m.getLatLng());});
- $('matchCount').textContent=`${visible.length} in view · ${matching.length} matching`;
- $('viewportNote').textContent=`Plants in the current map view · Zoom or pan to update`;
+ // An active search always searches the full data set, independently of map bounds.
+ // Without a search, preserve the useful map-viewport-aware plant list.
+ const listed=q?matching:visible;
+ $('matchCount').textContent=q?`${matching.length} search results (all locations)`:`${visible.length} in view · ${matching.length} matching`;
+ $('viewportNote').textContent=q?'Search Results · Across All Map Locations':'Plants in the Current Map View · Zoom or Pan to Update';
  const root=$('list');root.replaceChildren();
- if(!visible.length){root.textContent=matching.length?'No matching plants are in this map view. Click Show All Plants to see the full area.':'No matching plants. Try clearing a filter.';return;}
- visible.forEach(p=>{
+ if(!listed.length){root.textContent=matching.length?'No matching plants are in this map view. Click Show All Plants to see the full area.':'No matching plants. Try clearing a filter.';return;}
+ listed.forEach(p=>{
   const b=document.createElement('button');b.className='plant-card';
   b.innerHTML=`<strong>${esc(p['Coal Plant Name'])}</strong><small>${esc(label(p))} · ${esc(p['Parent Company'])}</small><small>Coal Retirement: ${esc(p['Coal Retirement Year']||'Not specified')}</small><span class="chip ${coalClass(p)}">Coal: ${esc(p['Coal Status']||'Unspecified')}</span>`;
   b.addEventListener('click',()=>{const m=markers.get(p.id);if(m){map.setView(m.getLatLng(),13,{animate:true});}showDetail(p);});root.appendChild(b);
@@ -61,7 +64,7 @@ map.on('moveend',render);
 function addData(key,text,asLink=false){if(!text)return;const d=document.createElement('section');d.className='datum';const title=document.createElement('label');title.textContent=key;const value=document.createElement('div');if(asLink){const urls=String(text).match(/https?:\/\/[^\s<>"']+/g)||[];if(urls.length){urls.forEach((u,i)=>{try{const x=new URL(u);if(!['https:','http:'].includes(x.protocol))return;const a=document.createElement('a');a.href=x.href;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Source '+(i+1)+' ↗';value.appendChild(a);value.appendChild(document.createElement('br'));}catch(e){}});}else value.textContent=text;}else value.textContent=text;d.append(title,value);$('detailBody').append(d);}
 function showDetail(p){$('detailName').textContent=p['Coal Plant Name'];$('detailLoc').textContent=label(p)+' · '+p['Parent Company'];$('detailBody').replaceChildren();
 if(p.duplicate_source_note)addData('Source record discrepancy',p.duplicate_source_note);
-for(const [title,key] of [['Plant status','Plant Status'],['Coal status','Coal Status'],['Coal retirement year','Coal Retirement Year'],['Plant retirement timeline','Retirement Year of Plant'],['Parent company','Parent Company'],['Capacity (MW)','Capacity MW'],['Capacity source wording','Capacity Source Text'],['Coal capacity (MW; approximate)','Coal Capacity MW Approx'],['Generating units','# Generating Units'],['Active coal units','# of Active Coal Units'],['Generator status','Generator Status'],['Energy source breakdown','Plant Energy Source Breakdown'],['Renewables','Renewables?'],['Coal conversions','Coal Conversions'],['Changes in operation','Changes in Operation'],['Research summary','Updated Summary'],['Demolished','Demolished?'],['Start year','Start Year'],['Site acres','Acres'],['Media sources','Media'],['Community partners','Community Partners'],['Advocacy conversation','Tone of Conversation'],['Primary contact information','Contact Information'],['Additional contacts','Additional Contacts'],['Contact email directory (from spreadsheet)','Contact Email Directory'],['Organization websites','Website']])addData(title,p[key],key==='Media'||key==='Website');
+for(const [title,key] of [['Plant status','Plant Status'],['Coal status','Coal Status'],['Coal retirement year','Coal Retirement Year'],['Plant retirement timeline','Retirement Year of Plant'],['Parent company','Parent Company'],['Capacity (MW)','Capacity MW'],['Coal capacity (MW; approximate)','Coal Capacity MW Approx'],['Generating units','# Generating Units'],['Active coal units','# of Active Coal Units'],['Generator status','Generator Status'],['Energy source breakdown','Plant Energy Source Breakdown'],['Renewables','Renewables?'],['Coal conversions','Coal Conversions'],['Changes in operation','Changes in Operation'],['Research summary','Updated Summary'],['Demolished','Demolished?'],['Start year','Start Year'],['Site acres','Acres'],['Media sources','Media'],['Community partners','Community Partners'],['Advocacy conversation','Tone of Conversation'],['Primary contact information','Contact Information'],['Additional contacts','Additional Contacts'],['Contact email directory (from spreadsheet)','Contact Email Directory'],['Organization websites','Website']])addData(title,p[key],key==='Media'||key==='Website');
 $('detail').hidden=false;}
 $('closeDetail').addEventListener('click',()=>{$('detail').hidden=true;});
 for(const id of ['search','state','coal','plant','year'])$(id).addEventListener(id==='search'?'input':'change',render);
