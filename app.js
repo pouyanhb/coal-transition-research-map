@@ -12,10 +12,17 @@ populate('state',plants.map(p=>p.State));populate('coal',plants.map(p=>p['Coal S
 $('totals').textContent=`${plants.length} records · ${new Set(plants.map(p=>p.State)).size} states · ${plants.filter(p=>coalClass(p)==='active').length} coal-active`;
 if(typeof L==='undefined'){$('mapError').hidden=false;return;}
 const map=L.map('map',{preferCanvas:true,zoomControl:true,worldCopyJump:false});
-const tileOptions={maxZoom:19,attribution:'&copy; OpenStreetMap contributors &copy; CARTO',keepBuffer:2};
-const layers={light:L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{...tileOptions,subdomains:'abcd'}),osm:L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors',subdomains:'abc',keepBuffer:2})};
-let base=layers.light.addTo(map);
-$('basemap').addEventListener('change',()=>{map.removeLayer(base);base=layers[$('basemap').value].addTo(map);});
+// Public OpenStreetMap raster tiles. No CARTO account or API key required.
+// One default basemap avoids broken-key placeholders or unavailable providers.
+const base=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom:19,
+  attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>',
+  crossOrigin:true,
+  keepBuffer:2
+}).addTo(map);
+let tileErrors=0;
+base.on('tileload',()=>{$('tileWarning').hidden=true;tileErrors=0;});
+base.on('tileerror',()=>{if(++tileErrors>=3)$('tileWarning').hidden=false;});
 const pointLayer=L.featureGroup().addTo(map);
 const markers=new Map();
 plants.forEach(p=>{if(!Number.isFinite(p.Latitude)||!Number.isFinite(p.Longitude))return;const m=L.circleMarker([p.Latitude,p.Longitude],{radius:8,color:'#fff',weight:2,fillColor:colors[coalClass(p)],fillOpacity:1,bubblingMouseEvents:false});m.bindTooltip(esc(p['Coal Plant Name']),{direction:'top'});m.on('click',()=>showDetail(p));markers.set(p.id,m);});

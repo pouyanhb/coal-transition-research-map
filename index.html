@@ -12,7 +12,8 @@
 <div id="list" class="plant-list"></div>
 <footer>Source: P2P Coal Plant Research Contact List MASTER. Plant/coal status can differ. Retirement estimates are not verified live.</footer>
 </aside><main class="map-area"><div id="map" aria-label="Interactive map of coal plants"></div>
-<div class="map-tools"><label for="basemap">Map style</label><select id="basemap"><option value="light">Light</option><option value="osm">Street map</option></select><button id="fit">Show all plants</button></div>
+<div class="map-tools"><button id="fit">Show all plants</button></div>
+<div id="tileWarning" class="tile-warning" hidden>Map background tiles could not load. Check your network or browser extensions and refresh.</div>
 <div class="legend"><span><i class="dot active"></i> Coal active</span><span><i class="dot retired"></i> Coal retired</span><span><i class="dot unknown"></i> Unspecified</span></div>
 <div class="detail" id="detail" hidden><div class="detail-head"><div><div class="eyebrow">PLANT RESEARCH</div><h2 id="detailName"></h2><p id="detailLoc"></p></div><button id="closeDetail" aria-label="Close details">×</button></div><div id="detailBody" class="detail-body"></div></div>
 <div id="mapError" class="map-error" hidden>Unable to load the map library. Check your internet connection and refresh the page.</div>
