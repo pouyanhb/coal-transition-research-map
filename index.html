@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Coal Plant Transition Research Map</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="style.css"></head>
+<body><div class="app"><aside class="side">
+<header><div class="eyebrow">P2P + RE / COAL TRANSITION RESEARCH</div><h1>Coal Plant Transition Map</h1><p>Explore plant operations, coal retirement plans, community partners and research contacts. Data reflects the supplied research spreadsheet, not live facility status. Contact details are visible to anyone with access to this website.</p>
+<div id="totals" class="totals"></div></header>
+<section class="filters"><label for="search">Search</label><input id="search" placeholder="Plant, city, owner, state…" aria-label="Search plants">
+<div class="two"><div><label for="state">State</label><select id="state"><option value="">All states</option></select></div><div><label for="coal">Coal status</label><select id="coal"><option value="">All coal statuses</option></select></div></div>
+<div class="two"><div><label for="plant">Plant status</label><select id="plant"><option value="">All plant statuses</option></select></div><div><label for="year">Coal retirement</label><select id="year"><option value="">All years</option><option value="past">2026 or earlier</option><option value="near">2027–2029</option><option value="mid">2030–2035</option><option value="later">2036 or later</option><option value="missing">Not specified</option></select></div></div>
+<div class="filter-footer"><strong id="matchCount"></strong><button id="clear">Clear filters</button></div></section>
+<div id="list" class="plant-list"></div>
+<footer>Source: P2P Coal Plant Research Contact List MASTER. Plant/coal status can differ. Retirement estimates are not verified live.</footer>
+</aside><main class="map-area"><div id="map" aria-label="Interactive map of coal plants"></div>
+<div class="map-tools"><label for="basemap">Map style</label><select id="basemap"><option value="light">Light</option><option value="osm">Street map</option></select><button id="fit">Show all plants</button></div>
+<div class="legend"><span><i class="dot active"></i> Coal active</span><span><i class="dot retired"></i> Coal retired</span><span><i class="dot unknown"></i> Unspecified</span></div>
+<div class="detail" id="detail" hidden><div class="detail-head"><div><div class="eyebrow">PLANT RESEARCH</div><h2 id="detailName"></h2><p id="detailLoc"></p></div><button id="closeDetail" aria-label="Close details">×</button></div><div id="detailBody" class="detail-body"></div></div>
+<div id="mapError" class="map-error" hidden>Unable to load the map library. Check your internet connection and refresh the page.</div>
+</main></div>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data/plants.js"></script><script src="app.js"></script></body></html>
