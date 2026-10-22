@@ -3,16 +3,16 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="style.css"></head>
 <body><div class="app"><aside class="side">
-<header><div class="eyebrow">P2P + RE / COAL TRANSITION RESEARCH</div><h1>Coal Plant Transition Map</h1><p>Explore plant operations, coal retirement plans, community partners and research contacts. Data reflects the supplied research spreadsheet, not live facility status. Contact details are visible to anyone with access to this website.</p>
+<header><div class="eyebrow">P2P + RE / COAL TRANSITION RESEARCH</div><h1>Coal Plant Transition Map</h1><p>Explore coal plants that have recently retired or are expected to retire over the coming decade, including longer-term plans. Review plant operations, retirement timelines, community partners, and research contacts. Dates reflect the research spreadsheet and may change.</p>
 <div id="totals" class="totals"></div></header>
 <section class="filters"><label for="search">Search</label><input id="search" placeholder="Plant, city, owner, state…" aria-label="Search plants">
-<div class="two"><div><label for="state">State</label><select id="state"><option value="">All states</option></select></div><div><label for="coal">Coal status</label><select id="coal"><option value="">All coal statuses</option></select></div></div>
-<div class="two"><div><label for="plant">Plant status</label><select id="plant"><option value="">All plant statuses</option></select></div><div><label for="year">Coal retirement</label><select id="year"><option value="">All years</option><option value="past">2026 or earlier</option><option value="near">2027–2029</option><option value="mid">2030–2035</option><option value="later">2036 or later</option><option value="missing">Not specified</option></select></div></div>
-<div class="filter-footer"><strong id="matchCount"></strong><button id="clear">Clear filters</button></div></section>
-<div id="list" class="plant-list"></div>
+<div class="two"><div><label for="state">State</label><select id="state"><option value="">All states</option></select></div><div><label for="coal">Coal Status</label><select id="coal"><option value="">All Coal Statuses</option></select></div></div>
+<div class="two"><div><label for="plant">Plant Status</label><select id="plant"><option value="">All Plant Statuses</option></select></div><div><label for="year">Coal Retirement</label><select id="year"><option value="">All years</option><option value="past">2026 or earlier</option><option value="near">2027–2029</option><option value="mid">2030–2035</option><option value="later">2036 or later</option><option value="missing">Not specified</option></select></div></div>
+<div class="filter-footer"><strong id="matchCount"></strong><button id="clear">Clear Filters</button></div></section>
+<div id="viewportNote" class="viewport-note" aria-live="polite">Showing plants in the current map view</div><div id="list" class="plant-list"></div>
 <footer>Source: P2P Coal Plant Research Contact List MASTER. Plant/coal status can differ. Retirement estimates are not verified live.</footer>
 </aside><main class="map-area"><div id="map" aria-label="Interactive map of coal plants"></div>
-<div class="map-tools"><button id="fit">Show all plants</button></div>
+<div class="map-tools"><label for="baseStyle">Map Style</label><select id="baseStyle" aria-label="Map Style"><option value="street">Street Map</option><option value="satellite">Satellite</option></select><button id="fit">Show All Plants</button></div>
 <div id="tileWarning" class="tile-warning" hidden>Map background tiles could not load. Check your network or browser extensions and refresh.</div>
 <div class="legend"><span><i class="dot active"></i> Coal active</span><span><i class="dot retired"></i> Coal retired</span><span><i class="dot unknown"></i> Unspecified</span></div>
 <div class="detail" id="detail" hidden><div class="detail-head"><div><div class="eyebrow">PLANT RESEARCH</div><h2 id="detailName"></h2><p id="detailLoc"></p></div><button id="closeDetail" aria-label="Close details">×</button></div><div id="detailBody" class="detail-body"></div></div>
