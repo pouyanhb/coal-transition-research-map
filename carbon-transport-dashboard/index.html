@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>U.S. Road Travel & Fuel Use Explorer</title>
+  <meta name="description" content="Explore state road travel, highway fuel use, and gasoline consistency trends from 2000–2024 using FHWA and EIA data.">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.plot.ly/plotly-3.1.0.min.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <p class="eyebrow">Transportation data explorer · 2000–2024</p>
+      <h1>U.S. Road Travel &amp; Fuel Use Explorer</h1>
+      <p class="lede">A simple way to compare states, follow trends over time, and see whether high highway fuel use comes from more road travel, higher fuel use per mile, or both.</p>
+      <div class="source-badges" aria-label="Data sources">
+        <span>FHWA: road travel &amp; highway fuel</span>
+        <span>EIA: gasoline consistency check</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="intro-grid" aria-labelledby="headline-findings">
+      <div>
+        <h2 id="headline-findings">What the national trend shows</h2>
+        <p>Road travel per resident in 2024 was close to its 2000 level, while reported highway fuel used per 1,000 vehicle miles was lower. That suggests the long-run decline in fuel use per resident is more closely tied to lower fuel use per mile than to a sustained decline in road travel.</p>
+        <p class="caution"><strong>2024 note:</strong> FHWA fuel reporting shows a larger-than-usual change in 2024, so one-year fuel-intensity movements should be interpreted cautiously.</p>
+      </div>
+      <div class="stat-grid" id="nationalStats" aria-live="polite"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="compare-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Compare states</p>
+          <h2 id="compare-title">How have states changed over time?</h2>
+          <p>Choose a measure, then add up to six states. Turn on the U.S. benchmark for context.</p>
+        </div>
+      </div>
+
+      <div class="controls controls-compare">
+        <label>
+          Measure
+          <select id="trendMetric">
+            <option value="vmt_per_capita">Road travel per resident</option>
+            <option value="fuel_per_1000_vmt">Highway fuel per 1,000 VMT</option>
+            <option value="fuel_per_capita">Highway fuel per resident</option>
+            <option value="gasoline_consistency_pct">FHWA highway gasoline / EIA transport gasoline</option>
+          </select>
+        </label>
+        <label>
+          Add a state
+          <select id="statePicker"></select>
+        </label>
+        <button type="button" id="addStateBtn">Add state</button>
+        <label class="check-label">
+          <input type="checkbox" id="showNational" checked>
+          Show U.S. benchmark
+        </label>
+      </div>
+
+      <div id="stateChips" class="chips" aria-label="Selected states"></div>
+      <div id="trendExplanation" class="plain-note"></div>
+      <div id="trendChart" class="chart chart-lg" aria-label="State trend comparison chart"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="map-title">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">Explore the map</p>
+          <h2 id="map-title">How do states compare in a selected year?</h2>
+          <p>Change the year or measure. Click a state to add it to the trend comparison above.</p>
+        </div>
+        <div class="year-control">
+          <label for="mapYear">Year: <strong id="mapYearLabel">2024</strong></label>
+          <input id="mapYear" type="range" min="2000" max="2024" value="2024" step="1">
+        </div>
+      </div>
+      <div class="controls">
+        <label>
+          Map measure
+          <select id="mapMetric">
+            <option value="vmt_per_capita">Road travel per resident</option>
+            <option value="fuel_per_1000_vmt">Highway fuel per 1,000 VMT</option>
+            <option value="fuel_per_capita">Highway fuel per resident</option>
+            <option value="gasoline_consistency_pct">Gasoline consistency ratio</option>
+          </select>
+        </label>
+      </div>
+      <div id="mapChart" class="chart chart-map" aria-label="United States state comparison map"></div>
+      <p id="mapFootnote" class="footnote"></p>
+    </section>
+
+    <section class="panel" aria-labelledby="drivers-title">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">Why is fuel use high?</p>
+          <h2 id="drivers-title">More road travel, more fuel per mile — or both?</h2>
+          <p>Each dot is a state. The vertical and horizontal lines show the national benchmark for the selected year.</p>
+        </div>
+        <div class="year-control">
+          <label for="scatterYear">Year: <strong id="scatterYearLabel">2024</strong></label>
+          <input id="scatterYear" type="range" min="2000" max="2024" value="2024" step="1">
+        </div>
+      </div>
+      <div id="scatterChart" class="chart chart-lg" aria-label="State road travel versus fuel intensity scatterplot"></div>
+      <div class="quadrant-guide">
+        <div><strong>Upper right:</strong> more travel + higher fuel use per mile</div>
+        <div><strong>Lower right:</strong> more travel + lower fuel use per mile</div>
+        <div><strong>Upper left:</strong> less travel + higher fuel use per mile</div>
+        <div><strong>Lower left:</strong> less travel + lower fuel use per mile</div>
+      </div>
+    </section>
+
+    <section class="panel methodology" aria-labelledby="method-title">
+      <p class="eyebrow">Method &amp; definitions</p>
+      <h2 id="method-title">What these measures mean</h2>
+
+      <details open>
+        <summary>Road travel per resident (VMT per capita)</summary>
+        <p>FHWA vehicle miles traveled on public roads divided by resident population. It includes cars, trucks, buses, motorcycles, freight and visitor traffic. It is best read as <strong>state road-travel intensity relative to population</strong>, not literal miles driven by the average resident.</p>
+      </details>
+      <details>
+        <summary>Highway fuel per 1,000 VMT</summary>
+        <p>FHWA highway gasoline plus highway special fuel divided by FHWA road VMT. Lower values mean fewer reported gallons are used for the same amount of road travel. The measure reflects vehicle efficiency, vehicle mix, freight activity and other system-level factors; it is not the same as passenger-vehicle MPG.</p>
+      </details>
+      <details>
+        <summary>Gasoline consistency ratio</summary>
+        <p>FHWA highway gasoline divided by EIA transportation-sector motor gasoline. EIA's transportation gasoline measure is broader than highway-only gasoline, so the ratio is a reconciliation check rather than a literal “share of transportation on highways.”</p>
+      </details>
+      <details>
+        <summary>Why FHWA and EIA are both used</summary>
+        <p>FHWA is the core source for what happens on public roads: VMT and highway fuel use. EIA provides the broader transportation-energy context. This first website version uses EIA only for the gasoline consistency comparison; the broader transportation CO₂ analysis will be added after Level 3 is completed.</p>
+      </details>
+
+      <div class="sources">
+        <h3>Project data</h3>
+        <p>FHWA MF-21 highway motor-fuel use; FHWA VM-2 vehicle miles traveled; EIA SEDS motor gasoline; EIA SEDS population. Historical backup fills from FHWA MF-225 and MF-226 are retained where the main MF-21 series was missing.</p>
+      </div>
+    </section>
+
+    <footer>
+      <p>Working research dashboard. Interpret one-year changes cautiously and use the methodology notes when citing results.</p>
+    </footer>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
